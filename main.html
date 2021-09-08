@@ -1,0 +1,278 @@
+<html xmlns="http://www.w3.org/1999/html">
+
+<head>
+	<title>WebGL - Canvas test</title>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<!------------------------------------------------------------------->
+	<script type="text/javascript" src="glMatrix.js"></script>
+	<script type="text/javascript" src="callbacks.js"></script>
+	<script type="text/javascript" src="glCourseBasis.js"></script>
+<!------------------------------------------------------------------->
+
+</head>
+
+
+<body onload="webGLStart();">
+
+	<table>
+		<tr>
+			<td>
+			
+				<canvas id="WebGL-test" style="border:none;" width="600" height="600"></canvas>
+				</td>
+				<td>
+				<br><br>
+
+				<!-- permet de changer la valeur de la transparence et de l'envoyer au CourseBasis-->
+				<form oninput="valTransp.value=transp.value;changeTransp()">
+					<label for="transp"><b><u>Transparence : </u></b></label>
+					<input id="transp" type="range" min="0.00" max ="1" step="0.01" value="1.0">
+					<output name ="valTransp">1.0</output>
+				</form>
+
+				<!-- permet de changer le mode d'affichage de l'objet 3D/tranche par tranche et de l'envoyer au CourseBasis-->
+				<form oninput="changeModeTranche(); affichGestionPile()">
+					<label for="affichTranche"><b><u>Tranche par tranche : </u></b></label>
+					<input id="affichTranche" type="checkbox" onchange="affichGestiontranche()" >
+				</form>
+				
+				<!-- permet de changer la tranche que l'on observe et de l'envoyer au CourseBasis-->
+				<form id="gestionTranche" oninput="valTranche.value=choixTranche.value;changeTranche()" hidden>
+					<label for="choixTranche"><b><u>Tranche affichée : </u></b></label>
+					<input id="choixTranche" type="range" min="1" max ="180" step="1" value="100">
+					<output name ="valTranche">100</output>
+				</form>
+
+
+
+				<!-- permet de changer le mode d'affichage de l'objet en niveaux de gris/ fausses couleurs/ fonction de transfert et de l'envoyer au CourseBasis-->
+				<form oninput="changeModeType();affichGestionMode();">
+					<label><b><u>Type d'affichage : </u></b></label>
+					<select id="modeType">
+						<option name="greyType" value="grey" selected>Niveaux de gris</option>
+						<option name="colourType" value="colour">Fausses couleurs</option>
+						<option name="transfertType" value="transfert">Fonction de transfert</option>
+					</select>
+				</form>
+
+
+
+				<!-- permet de choisir les couleurs que l'on veut afficher et à quelles bornes d'intensités elles correspondent et de les envoyer au CourseBasis-->
+				<table id="gestionCoul" hidden>
+					<tr>
+						<td>
+							<label><b><u>Fausses couleurs :</u></b></label><br>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<form oninput="affColour1()">
+								<label for="affichCol1"><b><u>Violet :</u></b></label>
+								<input id="affichCol1" type="checkbox" onchange="affichGestionViolet()" checked >
+							</form>
+						</td>
+						
+						<td>
+							<form id="gestionViolet" oninput="valRange1.value = rangeColour1.value; changeColour1()">
+								Borne d'intensité :<input id="rangeColour1" name="rangeColour1" type="range" min="0.0" max="3.0" value="0.7" step="0.01">
+								<output name="valRange1">0.7</output>
+							</form>
+						</td>
+						
+					</tr>
+					
+					<tr>
+						<td>
+							<form oninput="affColour2()">
+								<label for="affichCol2"><b><u>Bleu :</u></b></label>
+								<input id="affichCol2" type="checkbox" onchange="affichGestionBleu()" checked >
+							</form>
+						</td>
+						
+						<td>
+							<form id="gestionBleu" oninput="valRange2.value = rangeColour2.value; changeColour2()">
+								Borne d'intensité :<input id="rangeColour2" name="rangeColour2" type="range" min="0.0" max="3.0" value="1.4" step="0.01">
+								<output name="valRange2">1.4</output>
+							</form>
+						</td>
+						
+					</tr>
+					
+					<tr>
+						<td>
+							<form oninput="affColour3()">
+							<label for="affichCol3"><b><u>Jaune :</u></b></label>
+							<input id="affichCol3" type="checkbox" onchange="affichGestionJaune()" checked >
+							</form>
+						</td>
+						
+						<td>
+							<form id="gestionJaune" oninput="valRange3.value = rangeColour3.value; changeColour3()">
+								Borne d'intensité :<input id="rangeColour3" name="rangeColour3" type="range" min="0.0" max="3.0" value="2.5" step="0.01">
+								<output name="valRange3">2.5</output>
+							</form>
+						</td>
+						
+					</tr>
+					
+					<tr>
+						<td>
+							<form oninput="affColour4()">
+							<label for="affichCol4"><b><u>Orange :</u></b></label>
+							<input id="affichCol4" type="checkbox" onchange="affichGestionOrange()" checked>
+							</form>
+						</td>
+						
+						<td>
+							<form id="gestionOrange" oninput="valRange4.value = rangeColour4.value; changeColour4()">
+								Borne d'intensité :<input id="rangeColour4" name="rangeColour4" type="range" min="0.0" max="3.0" value="2.8" step="0.01">
+								<output name="valRange4">2.8</output>
+							</form>
+						</td>
+						
+					</tr>
+					
+					<tr>
+						<td>
+							<form oninput="affColour5()">
+								<label for="affichCol5"><b><u>Rouge : </u></b></label>
+								<input id="affichCol5" type="checkbox" checked>
+							</form>
+							
+			            </td>	
+		            </tr>	
+	            </table>
+
+
+
+				<!-- permet de changer la valeur des bornes min et max d'intensité pour la fonction de transfert et de les envoyer au CourseBasis-->
+				<form id="gestionTransf" oninput="valTransfMin.value=transfMin.value;valTransfMax.value=transfMax.value" hidden>
+					<label for="transfMin"><b><u>Borne d'intensité inferieur : </u></b></label>
+					<input id="transfMin" type="range" min="0.0" max ="1.0" step="0.001" value="0.0" oninput="changeTransfMin()">
+					<output name ="valTransfMin">0.0</output><br>
+					<label for="transfMax"><b><u>Borne d'intensité suppérieur : </u></b></label>
+					<input id="transfMax" type="range" min="0.0" max ="1.0" step="0.001" value="1.0" oninput="changeTransfMax()">
+					<output name ="valTransfMax">1.0</output>
+				</form>
+
+
+
+				<!-- permet de changer la tranche supérieure affichée et de l'envoyer au CourseBasis-->
+				<div id="gestionPile">
+					<form oninput="valPileUp.value = pileUp.value; changeSizeUp()">
+						<label for="pileUp"><b><u>Nombre d'images affichées : </u></b></label><br>
+						Borne superieur :
+						<input id="pileUp" name="pileUp" type="range" min="1" max ="181" step="1" value="181" onchange="changeSizeUp()">
+						<output name="valPileUp">181</output>
+					</form>
+					<!-- permet de changer la tranche inférieure affichée et de l'envoyer au CourseBasis-->
+					<form oninput="valPileDown.value = pileDown.value; changeSizeDown()">
+						Borne inferieur :
+						<input id="pileDown" name="pileDown" type="range" min="0" max ="181" step="1" value="0" onchange="changeSize()">
+						<output name="valPileDown">181</output>
+					</form>
+				</div>
+
+	        </td>
+	    </tr>
+    </table>
+
+</body>
+
+
+</html>
+<script>
+
+    //affiche ou non les inputs en fonction du type d'affichage
+	function affichGestionMode(){
+		verif = document.getElementById("modeType");
+		if(verif.value == "grey"){
+			document.getElementById("gestionCoul").hidden = true;
+			document.getElementById("gestionTransf").hidden = true;
+		}
+		else if(verif.value == "colour"){
+			document.getElementById("gestionCoul").hidden = false;
+			document.getElementById("gestionTransf").hidden = true;
+		}
+		else if(verif.value == "transfert"){
+			document.getElementById("gestionCoul").hidden = true;
+			document.getElementById("gestionTransf").hidden = false;
+		}
+
+	}
+
+    //affiche ou non les inputs en fonction du type d'affichage des tranches
+	function affichGestiontranche(){
+		verif = document.getElementById("affichTranche").checked;
+		if(verif == true){
+			document.getElementById("gestionTranche").hidden = false;
+		}
+		else{
+			document.getElementById("gestionTranche").hidden = true;
+		}
+
+	}
+	
+    //affiche ou non les inputs en fonction du check de la couleur 1
+	function affichGestionViolet(){
+		verif = document.getElementById("affichCol1").checked;
+		if(verif == true){
+			document.getElementById("gestionViolet").hidden = false;
+		}
+		else{
+			document.getElementById("gestionViolet").hidden = true;
+		}
+
+	}
+	
+    //affiche ou non les inputs en fonction du check de la couleur 2
+	function affichGestionBleu(){
+		verif = document.getElementById("affichCol2").checked;
+		if(verif == true){
+			document.getElementById("gestionBleu").hidden = false;
+		}
+		else{
+			document.getElementById("gestionBleu").hidden = true;
+		}
+
+	}
+
+    //affiche ou non les inputs en fonction du check de la couleur 3
+	function affichGestionJaune(){
+		verif = document.getElementById("affichCol3").checked;
+		if(verif == true){
+			document.getElementById("gestionJaune").hidden = false;
+		}
+		else{
+			document.getElementById("gestionJaune").hidden = true;
+		}
+
+	}
+	
+    //affiche ou non les inputs en fonction du check de la couleur 4
+	function affichGestionOrange(){
+		verif = document.getElementById("affichCol4").checked;
+		if(verif == true){
+			document.getElementById("gestionOrange").hidden = false;
+		}
+		else{
+			document.getElementById("gestionOrange").hidden = true;
+		}
+
+	}
+	
+    //affiche ou non les inputs de la gestion de la pile d'images en fonction du mode d'affichage des tranches
+	function affichGestionPile(){
+		verif = document.getElementById("affichTranche").checked;
+		if(verif == true){
+			document.getElementById("gestionPile").hidden = true;
+		}
+		else{
+			document.getElementById("gestionPile").hidden = false;
+		}
+
+	}
+	
+</script>
